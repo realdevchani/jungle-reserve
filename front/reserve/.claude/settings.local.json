@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(redis-cli ping:*)",
+      "Bash(brew list:*)",
+      "Bash(docker ps:*)",
+      "Bash(xargs:*)",
+      "Bash(ls:*)",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"DESCRIBE TBL_USER;\")",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"ALTER TABLE TBL_USER MODIFY COLUMN USER_MAJOR enum\\(''composition'',''drum'',''guitar'',''piano'',''saxophone'',''vocal''\\) NULL DEFAULT NULL; ALTER TABLE TBL_USER MODIFY COLUMN USER_TYPE enum\\(''majorStudent'',''normalStudent''\\) NULL DEFAULT NULL;\")",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"SELECT id, USER_NAME, USER_PHONE FROM TBL_USER;\")",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"DELETE FROM TBL_USER;\")",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"SET FOREIGN_KEY_CHECKS=0; DELETE FROM TBL_USER; SET FOREIGN_KEY_CHECKS=1;\")",
+      "Bash(mysql -u hr -p1234 jungle_reserve -e \"SELECT COUNT\\(*\\) FROM TBL_USER;\")",
+      "Bash(./gradlew compileJava)",
+      "Bash(grep -r \"qr\\\\|QR\\\\|Qr\" /Users/chanlee/backend/project/jungle-reserve/back/jungle/src --include=*.java)",
+      "Bash(brew install:*)",
+      "Bash(pdftoppm -v)",
+      "Bash(pdftotext /Users/chanlee/Desktop/포트폴리오5장/10장/이승찬_포트폴리오.pdf -)",
+      "Bash(pdftotext \"/Users/chanlee/Desktop/포트폴리오5장/10장/이승찬_포트폴리오.pdf\" /tmp/portfolio.txt)",
+      "Read(//tmp/**)",
+      "Bash(pdfinfo \"/Users/chanlee/Desktop/포트폴리오5장/10장/이승찬_포트폴리오.pdf\")",
+      "Bash(pdftoppm -png -r 150 -f 1 -l 4 \"/Users/chanlee/Desktop/포트폴리오5장/10장/이승찬_포트폴리오.pdf\" /tmp/portfolio_page)",
+      "Bash(pdftoppm -png -r 150 -f 5 -l 11 \"/Users/chanlee/Desktop/포트폴리오5장/10장/이승찬_포트폴리오.pdf\" /tmp/portfolio_page)",
+      "Bash(pdftoppm -png -r 150 -f 1 -l 10 \"/Users/chanlee/Desktop/포트폴리오5장/new_1/new.pdf\" /tmp/new_portfolio)",
+      "Bash(pdftoppm -png -r 150 -f 11 -l 20 \"/Users/chanlee/Desktop/포트폴리오5장/new_1/new.pdf\" /tmp/new_portfolio)"
+    ]
+  }
+}

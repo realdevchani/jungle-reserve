@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Build
+build/
+out/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Env
+.env
+*.env
+.env.*
+
+# Node
+node_modules/
+
+# Logs
+*.log
+.claude/
