@@ -17,12 +17,30 @@ out/
 
 # Env
 .env
-*.env
 .env.*
+!.env.example
 
 # Node
 node_modules/
 
 # Logs
 *.log
+
+# Configs
 .claude/
+.dockerignore
+nginx/
+*.conf
+
+# Dev notes
+*.md
+!/README.md
+
+# Archives
+*.zip
+
+# Resources
+resources/
+
+# Docker (prod)
+docker-compose.prod.yml
