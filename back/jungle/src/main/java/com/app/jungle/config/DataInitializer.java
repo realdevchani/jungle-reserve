@@ -1,7 +1,10 @@
 package com.app.jungle.config;
 
+import com.app.jungle.domain.entity.Admin;
 import com.app.jungle.domain.entity.User;
+import com.app.jungle.repository.AdminRepository;
 import com.app.jungle.repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -16,9 +19,11 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Profile("user")
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -85,5 +90,15 @@ public class DataInitializer implements CommandLineRunner {
 
         userRepository.saveAll(users);
         log.info("유저 {} 명 초기 데이터 삽입 완료.", users.size());
+
+        // Admin 초기 계정
+        if (adminRepository.count() == 0) {
+            Admin admin = Admin.builder()
+                    .adminId("admin")
+                    .adminPassword(passwordEncoder.encode("Jungle1234!"))
+                    .build();
+            adminRepository.save(admin);
+            log.info("관리자 초기 계정 생성 완료. (ID: admin)");
+        }
     }
 }
