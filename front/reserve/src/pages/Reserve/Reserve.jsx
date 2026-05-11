@@ -109,6 +109,28 @@ const Reserve = () => {
     }
   }, [id, dispatch]);
 
+  const handleCheckInOtherRoom = useCallback(async (otherRoomId) => {
+    try {
+      const res = await authFetch(`/api/rooms/${otherRoomId}/check-in`, {
+        method: "POST",
+        body: JSON.stringify({ durationHours: 1 }),
+      });
+      if (res.ok) {
+        const roomRes = await authFetch(`/api/rooms/${otherRoomId}`);
+        if (roomRes.ok) {
+          const roomData = await roomRes.json();
+          dispatch(setActiveRoom(roomData.data));
+        }
+      } else {
+        const data = await res.json();
+        alert(data.message || "입실에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("서버에 연결할 수 없습니다.");
+    }
+  }, [dispatch]);
+
   const stopScanner = useCallback(async () => {
     if (scannerRef.current) {
       try {
@@ -138,15 +160,24 @@ const Reserve = () => {
           if (scannedRef.current) return;
           const scannedRoomId = extractRoomIdFromQr(decodedText.trim());
 
+          if (!scannedRoomId) {
+            setScanMsg("올바른 QR 코드가 아닙니다.");
+            return;
+          }
+
           if (scannedRoomId === id) {
             scannedRef.current = true;
             stopScanner();
             handleAction("check-in");
           } else {
-            setScanMsg(scannedRoomId
-              ? `${600 + Number(scannedRoomId)}호 QR입니다. ${600 + Number(id)}호 QR을 스캔해주세요.`
-              : "올바른 QR 코드가 아닙니다."
+            const confirmed = window.confirm(
+              `${600 + Number(id)}호 예약이 취소되고 ${600 + Number(scannedRoomId)}호로 입실됩니다. 진행하시겠습니까?`
             );
+            if (confirmed) {
+              scannedRef.current = true;
+              stopScanner();
+              handleCheckInOtherRoom(scannedRoomId);
+            }
           }
         },
         () => {}

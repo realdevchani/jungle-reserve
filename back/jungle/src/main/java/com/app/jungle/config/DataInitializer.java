@@ -1,8 +1,11 @@
 package com.app.jungle.config;
 
 import com.app.jungle.domain.entity.Admin;
+import com.app.jungle.domain.entity.Room;
 import com.app.jungle.domain.entity.User;
+import com.app.jungle.domain.enums.room.RoomStatus;
 import com.app.jungle.repository.AdminRepository;
+import com.app.jungle.repository.RoomRepository;
 import com.app.jungle.repository.UserRepository;
 import org.springframework.context.annotation.Profile;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +27,17 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
+    private final RoomRepository roomRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
+        initUsers();
+        initAdmin();
+        initRooms();
+    }
+
+    private void initUsers() {
         if (userRepository.count() > 0) {
             log.info("유저 데이터가 이미 존재합니다. 초기화를 건너뜁니다.");
             return;
@@ -37,7 +47,6 @@ public class DataInitializer implements CommandLineRunner {
 
         String defaultPin = passwordEncoder.encode("0000");
 
-        // 중복 전화번호 제거를 위한 Set
         Set<String> seen = new LinkedHashSet<>();
         List<User> users = new ArrayList<>();
 
@@ -73,6 +82,7 @@ public class DataInitializer implements CommandLineRunner {
                 {"지수인", "010-3996-8423"},
                 {"한서희", "010-9945-1902"},
                 {"문제호", "010-9935-1249"},
+                {"선생님", "010-5122-5729"},
         };
 
         for (String[] raw : rawUsers) {
@@ -90,15 +100,35 @@ public class DataInitializer implements CommandLineRunner {
 
         userRepository.saveAll(users);
         log.info("유저 {} 명 초기 데이터 삽입 완료.", users.size());
+    }
 
-        // Admin 초기 계정
-        if (adminRepository.count() == 0) {
-            Admin admin = Admin.builder()
-                    .adminId("admin")
-                    .adminPassword(passwordEncoder.encode("Jungle1234!"))
-                    .build();
-            adminRepository.save(admin);
-            log.info("관리자 초기 계정 생성 완료. (ID: admin)");
+    private void initAdmin() {
+        if (adminRepository.count() > 0) {
+            log.info("어드민 데이터가 이미 존재합니다. 초기화를 건너뜁니다.");
+            return;
         }
+
+        Admin admin = Admin.builder()
+                .adminId("jungle")
+                .adminPassword(passwordEncoder.encode("jungle1234"))
+                .build();
+        adminRepository.save(admin);
+        log.info("관리자 초기 계정 생성 완료.");
+    }
+
+    private void initRooms() {
+        if (roomRepository.count() > 0) {
+            log.info("연습실 데이터가 이미 존재합니다. 초기화를 건너뜁니다.");
+            return;
+        }
+
+        for (long i = 1; i <= 12; i++) {
+            Room room = Room.builder()
+                    .id(i)
+                    .roomStatus(RoomStatus.AVAILABLE)
+                    .build();
+            roomRepository.save(room);
+        }
+        log.info("연습실 12개 생성 완료.");
     }
 }
