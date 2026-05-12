@@ -2,10 +2,13 @@ package com.app.jungle.util;
 
 import com.app.jungle.exception.JwtTokenException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -16,6 +19,10 @@ public class JwtTokenUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
     // Access Token 생성 (user: userPhone, admin: adminId + role)
     public String generateAccessToken(Map<String, String> claims) {
         Long expirationTimeInMillis = 1000 * 60L * 60L * 24 * 60L;
@@ -24,7 +31,7 @@ public class JwtTokenUtil {
         var builder = Jwts.builder()
                 .setExpiration(expirationDate)
                 .setIssuer("jungle")
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .setHeaderParam("type", "JWT");
         for (Map.Entry<String, String> e : claims.entrySet()) {
             if (e.getValue() != null) {
@@ -45,7 +52,7 @@ public class JwtTokenUtil {
                 .claim("userPhone", userPhone) // 클레임 추가(전화번호)
                 .setExpiration(expirationDate) // 만료시간
                 .setIssuer("jungle")
-                .signWith(SignatureAlgorithm.HS256, secretKey) // SHA-256 알고리즘
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // HS256 알고리즘
                 .setHeaderParam("type", "JWT") // JWT 타입
                 .compact(); // 생성
     }
@@ -54,7 +61,7 @@ public class JwtTokenUtil {
     public boolean verifyJwtToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -71,7 +78,7 @@ public class JwtTokenUtil {
     public Claims getUserPhoneFromToken(String token) {
         try {
             return Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -84,7 +91,7 @@ public class JwtTokenUtil {
     public Long getTokenExpiry(String token){
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
