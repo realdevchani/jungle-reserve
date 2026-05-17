@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { maskName, maskPhone } from "utils/mask";
 import S from "./style";
 
 const adminFetch = async (url, options = {}) => {
@@ -99,8 +100,8 @@ const Users = () => {
         <tbody>
           {filteredUsers.map((user) => (
             <tr key={user.id}>
-              <S.Td>{user.userName}</S.Td>
-              <S.Td>{user.userPhone}</S.Td>
+              <S.Td>{maskName(user.userName)}</S.Td>
+              <S.Td>{maskPhone(user.userPhone)}</S.Td>
               <S.Td>{formatMinutes(user.totalPracticeMinutes)}</S.Td>
               <S.Td>
                 <S.PinResetButton onClick={() => handlePinReset(user.id, user.userName)}>

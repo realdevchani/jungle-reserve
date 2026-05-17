@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { connectWebSocket, disconnectWebSocket } from "utils/websocket";
 import S from "pages/Home/style";
+import { maskName } from "utils/mask";
 import PanelStyle from "./style";
 
 const adminFetch = async (url, options = {}) => {
@@ -269,7 +270,7 @@ const Dashboard = () => {
         <PanelStyle.Panel>
           <PanelStyle.PanelTitle>{roomDisplay} 사용 중</PanelStyle.PanelTitle>
           <PanelStyle.InUseInfo>
-            {selectedRoom.currentUserName ?? "—"}
+            {maskName(selectedRoom.currentUserName)}
           </PanelStyle.InUseInfo>
           <PanelStyle.InUseInfo>
             입실: {formatDateTime(selectedRoom.startAt)}
